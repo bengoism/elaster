@@ -1,6 +1,6 @@
 module.exports = {
 	mongo: {
-		connection: 'mongodb://localhost:27017/likeastoreproddb'
+		connection: 'mongodb://localhost:27017/watchdb'
 	},
 
 	elastic: {
@@ -12,83 +12,37 @@ module.exports = {
 	},
 
 	collections: [ {
-		name: 'collections',
-		index: 'collections',
-		type: 'collection',
-		fields: ['_id', 'public', 'title', 'description', 'user', 'userData'],
-		mappings: {
-			'collection': {
-				'properties': {
-					'public': {
-						'type': 'boolean',
-						'index': 'not_analyzed'
-					},
-					'title': {
-						'type': 'string'
-					},
-					'description': {
-						'type': 'string'
-					},
-					'user': {
-						'type': 'string',
-						'index': 'not_analyzed'
-					},
-					'userData': {
-						'type': 'object',
-						'index': 'not_analyzed'
-					}
-				}
-			}
-		}
+		name: 'auctions',
+		index: 'auctions',
+		type: 'auction',
+		fields: [
+			'_id',
+			'auctionhouse',
+			'name',
+			'date',
+			'description',
+			'url',
+			'savedhammerprice'
+		]
 	},
 	{
-		name: 'items',
-		index: 'items',
-		query: {user: 'alexander.beletsky@gmail.com'},
-		type: 'item',
-		mappings: {
-			'item': {
-				'properties': {
-					'authorName': {
-						'type': 'string'
-					},
-					'itemId': {
-						'type': 'string',
-						'index': 'not_analyzed'
-					},
-					'idInt': {
-						'type': 'string',
-						'store': 'false',
-						'index': 'not_analyzed'
-					},
-					'created': {
-						'type': 'date',
-						'format': 'dateOptionalTime'
-					},
-					'date': {
-						'type': 'date',
-						'format': 'dateOptionalTime'
-					},
-					'description': {
-						'type': 'string'
-					},
-					'source': {
-						'type': 'string',
-					},
-					'type': {
-						'type': 'string',
-						'index': 'not_analyzed'
-					},
-					'user': {
-						'type': 'string',
-						'index': 'not_analyzed'
-					},
-					'userData': {
-						'type': 'object',
-						'index': 'not_analyzed'
-					}
-				}
-			}
-		}
+		name: 'watches',
+		index: 'watches',
+		type: 'watch',
+		fields: [
+			'_id',
+			'image',
+			'url',
+			'description',
+			'name',
+			'searchable',
+			'date',
+			'featured',
+			'estimate',
+			'startingprice',
+			'hammerprice',
+			'auction'
+		]
+
 	}]
 };

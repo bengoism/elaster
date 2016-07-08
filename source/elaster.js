@@ -18,7 +18,7 @@ function format(duration) {
 function exportCollection(desc, callback) {
 	var collection = db[desc.name];
 	var query = desc.query || {};
-
+	console.log(collection);
 	if (!collection) {
 		return callback('collection ' + desc.name + ' does not exist.');
 	}
@@ -37,7 +37,7 @@ function exportCollection(desc, callback) {
 		function (next) {
 			console.log('----> dropping existing index [' + desc.index + ']');
 			elastic.indices.delete({index: desc.index}, function (err) {
-				var indexMissing = err && err.message.indexOf('IndexMissingException') === 0;
+				var indexMissing = err && err.statusCode === 404;
 				next(indexMissing ? null : err);
 			});
 		},
@@ -59,7 +59,7 @@ function exportCollection(desc, callback) {
 			});
 		},
 		function (next) {
-			console.log('----> analizing collection [' + desc.name + ']');
+			console.log('----> analyzing collection [' + desc.name + ']');
 			collection.count(query, function (err, total) {
 				if (err) {
 					return next(err);
@@ -77,6 +77,11 @@ function exportCollection(desc, callback) {
 					item = _.pick(item, desc.fields);
 				}
 
+				if(item.hasOwnProperty("_id")) {
+					item["mongoId"] = item["_id"];
+        	delete item["_id"];
+				}
+
 				this.queue(item);
 			});
 
@@ -88,7 +93,7 @@ function exportCollection(desc, callback) {
 				elastic.create({
 					index: desc.index,
 					type: desc.type,
-					id: item._id.toString(),
+					id: item.mongoId.toString(),
 					body: item
 				}, function (err) {
 					if (err) {
